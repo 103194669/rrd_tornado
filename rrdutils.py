@@ -13,25 +13,25 @@ class CreateRRD(object):
             'RRA:MAX:0.5:1:600',
             'RRA:MAX:0.5:5:600',
             'RRA:MAX:0.5:12:600'
-			)
+            )
 
 class GraphRRD(object):
-	def graph(self, static_path, time):
-		rrdtool.graph(static_path + "/test.png",
-			"-s","NOW-%s" % time,
-			"DEF:in=%s:eth0:MAX" % RRD_PATH,
-			"AREA:in#00FF00:In traffic",
-			"CDEF:inbits=in,8,*",
-			"GPRINT:inbits:AVERAGE:Avg In traffic\: %6.2lf %Sbps",
-			"GPRINT:inbits:MAX:Max In traffic\: %6.2lf %Sbps",
-			"-S","20",
-			"-t","网卡流量",
-			"-v","Bytes/s",
-			"-X","0",
-			"-c","FONT#9400d3",
-			"-w","600",
-			"--slope-mode",
-			"--no-gridfit",
-			"-b","1024",
-			"--lower-limit","0"
-			)
+    def graph(self, static_path, time):
+        rrdtool.graph(static_path + "/test.png",
+            "-s","NOW-%s" % time,
+            "DEF:in=%s:eth0:MAX" % RRD_PATH,
+            "AREA:in#00FF00:In traffic",
+            "CDEF:inbits=in,8,*",
+            "GPRINT:inbits:AVERAGE:Avg In traffic\: %6.2lf %Sbps",
+            "GPRINT:inbits:MAX:Max In traffic\: %6.2lf %Sbps",
+            "-S","20",
+            "-t","网卡流量",
+            "-v","Bytes/s",
+            "-X","0",
+            "-c","FONT#9400d3",
+            "-w","600",
+            "--slope-mode",
+            "--no-gridfit",
+            "-b","1024",
+            "--lower-limit","0"
+            )
