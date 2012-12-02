@@ -30,7 +30,7 @@ def datacollect():
             data = i
         input = p.search(data)
         if input:
-            print input.group(1)
+           # print input.group(1)
             rrdtool.update(RRD_PATH, "N:%s" % input.group(1))
         f.close()
         time.sleep(5)
