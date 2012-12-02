@@ -29,9 +29,10 @@ class GraphRRD(object):
             "-v","Bytes/s",
             "-X","0",
             "-c","FONT#9400d3",
-            "-w","600",
+            "-w","400",
             "--slope-mode",
             "--no-gridfit",
             "-b","1024",
-            "--lower-limit","0"
+            "--lower-limit","1.5",
+            "--zoom","2"
             )
