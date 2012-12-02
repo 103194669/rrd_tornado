@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 import os
+import mimetypes
 import rrdtool
 import tornado.httpserver
 import tornado.ioloop
@@ -10,47 +11,55 @@ from tornado.options import define, options
 from rrdutils import GraphRRD
 
 define("port", default=80, help="run on the given port", type=int)
-define("static_path", default=os.path.join(os.path.dirname(__file__), "static"))
+define("png_buffer", default=os.path.join(os.path.dirname(__file__), "pngbuffer"))
 class Application(tornado.web.Application):
     def __init__(self):
-        settings = dict(
-                static_path=options.static_path
-                )
         handers = [
             (r"/",MainHander),
-            (r"/static/", tornado.web.StaticFileHandler, dict(path=settings['static_path'])),
+            (r"/pngbuffer/(.*)", PNGHandler),
         ]
-        tornado.web.Application.__init__(self, handers, **settings)
+        tornado.web.Application.__init__(self, handers)
+
 
 class MainHander(tornado.web.RequestHandler):
     def get(self):
-        GraphRRD().graph(options.static_path, 86400)
-        self.write('<html><body><img src="static/test.png"/>'
-                '<form action="/" method="post">'
-                '<input type="text" name="time">'
-                '<input type="submit" value="提交">'
-                '</form></body></html>')
+        GraphRRD().graph(options.png_buffer, 86400)
+        self.render("templates/main.html")
 
     def post(self):
         try:
             time = self.get_argument("time")
             int(time)
-            GraphRRD().graph(options.static_path, str(time))
-            self.write('<html><body><img src="static/test.png"/>'
-                    '<form action="/" method="post">'
-                    '<input type="text" name="time">'
-                    '<input type="submit" value="提交">'
-                    '</form></body></html>')
+            print time
+            GraphRRD().graph(options.png_buffer, str(time))
+            self.render("templates/main.html")
         #except ValueError, e:
         except :
-            self.write('<center><h1>输入错误<h1></center>'
-                    '<center><input type="button" name="Submit" value="返回"'
-                    'onclick ="location.href=\'/\'"/></center>')
+            self.render("templates/error.html")
+
+class PNGHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self.filename = self.request.path.lstrip("/")
+
+    def get(self, path):
+        abspath = os.path.abspath(self.filename)
+        if not os.path.exists(abspath):
+            raise tornado.web.HTTPError(404)
+        if not os.path.isfile(abspath):
+            raise tornado.web.HTTPError(403, "%s is not a file", self.filename)
+        mime_type, encoding = mimetypes.guess_type(abspath)
+        if mime_type:
+            self.set_header("Content-Type", mime_type)
+        self.set_header("Cache-Control", "no-cache")
+        self.set_header("Etag", "unknown")
+        with open(abspath, "rb") as file:
+            data = file.read()
+            self.write(data)
 
 def main():
-    if not os.path.exists(options.static_path):
-        os.makedirs(options.static_path)
-        
+    if not os.path.exists(options.png_buffer):
+        os.makedirs(options.png_buffer)
+    
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
