@@ -7,20 +7,7 @@ import time
 import re
 
 from rrdutils import RRD_PATH, CreateRRD
-
-def daemon():
-    sys.stdout.flush()
-    sys.stderr.flush()
-    try:
-        pid = os.fork()
-        if pid >0:
-            sys.exit(0)
-    except OSError, e:
-        sys.stderr.write("fork failed: (%d) %s\n" % (e.errno, e.strerror))
-        sys.exit(1)
-    os.chdir("/")
-    os.umask(0)
-    os.setsid()
+from daemon import Daemon
 
 def datacollect():
     p = re.compile(r"^.*: *(\d+) *")
@@ -36,7 +23,7 @@ def datacollect():
         time.sleep(5)
 
 def main():
-    daemon()
+    Daemon().daemon()
     if os.path.exists(RRD_PATH):
         datacollect()
     else:
