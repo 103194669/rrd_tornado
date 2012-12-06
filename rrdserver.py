@@ -13,7 +13,7 @@ from rrdutils import GraphRRD
 from daemon import Daemon
 
 define("port", default=80, help="run on the given port", type=int)
-define("daemon", default=True, help="True or False")
+define("daemon", default=False, help="True or False")
 define("reload", default=True, help="True or False")
 define("png_buffer", default=os.path.abspath(os.path.join(os.path.dirname(__file__), "pngbuffer")))
 define("template_path", default=os.path.abspath(os.path.join(os.path.dirname(__file__), "templates")))
@@ -23,15 +23,16 @@ define("root_dir", default=os.path.abspath(os.path.dirname(__file__)))
 
 class Application(tornado.web.Application):
     def __init__(self):
+        settings = dict(
+            template_path=options.template_path,
+            static_path=os.path.abspath(os.path.join(os.path.dirname(__file__), "static"))
+            )
+
         handers = [
             (r"/",MainHander),
             (r"/pngbuffer/(.*)", PNGHandler),
         ]
     
-        settings = dict(
-            template_path=options.template_path
-            )
-
         tornado.web.Application.__init__(self, handers, **settings)
 
 

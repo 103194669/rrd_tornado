@@ -1,9 +1,41 @@
-<html>
-    <body>
-        <img src="pngbuffer/test.png"/>
-        <form action="/" method="post">
-            <input type="text" name="time">
-            <input type="submit" value="提交">
-        </form>
-    </body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="/static/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+<link href="/static/css/bootstrap-responsive.css" rel="stylesheet" />
+<title>main</title>
+</head>
+<body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">系统监控图</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">首页</a></li>
+              <li><a href="#about">关于</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <center><img src="pngbuffer/test.png"/></center>
+    <div class="container">
+ 	<form class="well form-search" action="/" method="post">
+		<input type="time" class="input-medium search-query">
+		<button type="submit" class="btn btn-primary">提交</button>
+	</form>
+    </div>
+ </body>
 </html>
