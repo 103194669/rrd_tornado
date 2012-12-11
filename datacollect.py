@@ -23,7 +23,7 @@ def datacollect():
         time.sleep(5)
 
 def main():
-    Daemon().daemon()
+    Daemon(pidfile=os.path.join(os.path.dirname(RRD_PATH),"log/data.pid")).daemon()
     if os.path.exists(RRD_PATH):
         datacollect()
     else:
